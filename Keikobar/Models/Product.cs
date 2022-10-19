@@ -3,14 +3,15 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Keikobar.Models;
+namespace Keikobar.Models; 
 
 public class Product : BaseEntity
 {
     [Required]
     public string Name { get; set; }
     public string Description { get; set; }
-    [Range(0,int.MaxValue, ErrorMessage = "Price for 'Product' must be is possible")]
+    [Range(0.01, 100.00, ErrorMessage = "Price must be between 0.01 and 100.00")]
+    // [Range(typeof(decimal), "minimum", "maximum")]
     public decimal Price { get; set; }
     public string Image { get; set; }
     

@@ -6,7 +6,9 @@
             <h2 class="text-primary">Applicaton Type List</h2>
         </div>
         <div class="col-6 text-right">
-            <a asp-controller="Application" asp-action="Create" class="btn btn-primary">Create New Application Type</a>
+            <a asp-controller="Application" asp-action="Create" class="btn btn-primary">
+                <i class="fa-solid fa-plus pr-2"></i>Create New Application Type
+            </a>
         </div>
     </div>
 
@@ -25,8 +27,17 @@
             @foreach (var obj in Model)
             {
                 <tr>
-                    <th class="text-monospace">@obj.Name</th>
-                    <th></th>
+                    <td class="text-monospace" width="80%">@obj.Name</td>
+                    <td>
+                        <div class="w-100 btn-group" role="group">
+                            <a asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-outline-info mx-2">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-outline-danger mx-2">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             }
             </tbody>
