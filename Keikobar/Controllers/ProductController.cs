@@ -26,11 +26,12 @@ namespace Keikobar.Controllers
         
         public IActionResult Index()
         {
-            IEnumerable<Product> objList = _dbContext.Products;
+            IEnumerable<Product> objList = _dbContext.Products.Include(u =>u.Category).Include(u => u.ApplicationType);
 
             // foreach (var obj in objList)
             // {
             //     obj.Category = _dbContext.Categories.FirstOrDefault(u => u.Id == obj.CategoryId);
+            //     obj.ApplicationType = _dbContext.ApplicationTypes.FirstOrDefault(u => u.Id == obj.ApplicationTypeId);
             // }
             
             return View(objList);
@@ -57,7 +58,12 @@ namespace Keikobar.Controllers
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
-                })
+                }),
+                ApplicationTypeSelectList  = _dbContext.ApplicationTypes.Select(i => new SelectListItem
+                {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            })
             };
 
             if (id == null)
@@ -146,6 +152,11 @@ namespace Keikobar.Controllers
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
+            productVm.ApplicationTypeSelectList = _dbContext.ApplicationTypes.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
 
             return View(productVm);
         }
@@ -158,7 +169,7 @@ namespace Keikobar.Controllers
                 return NotFound();
             }
 
-            Product product = _dbContext.Products.Include(u => u.Category).FirstOrDefault(u => u.Id == id);
+            Product product = _dbContext.Products.Include(u => u.Category).Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id);
 
             if (product == null)
             {
