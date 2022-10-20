@@ -34,7 +34,7 @@ namespace Keikobar.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationTypes");
+                    b.ToTable("ApplicationTypes", (string)null);
                 });
 
             modelBuilder.Entity("Keikobar.Models.Category", b =>
@@ -52,7 +52,7 @@ namespace Keikobar.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Keikobar.Models.Product", b =>
@@ -89,7 +89,7 @@ namespace Keikobar.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Keikobar.Models.Product", b =>

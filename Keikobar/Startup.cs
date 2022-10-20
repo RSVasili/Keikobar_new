@@ -6,6 +6,7 @@ using Keikobar.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,8 @@ namespace Keikobar
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            //настройка для идентификации
+            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<AppDbContext>();
             //настроййка запуска сессии
             services.AddHttpContextAccessor();
             services.AddSession(Options =>
@@ -57,7 +60,7 @@ namespace Keikobar
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             
             app.UseSession();
