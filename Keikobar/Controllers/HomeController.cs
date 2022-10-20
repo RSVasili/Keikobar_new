@@ -33,6 +33,18 @@ namespace Keikobar.Controllers
             return View(homeVm);
         }
 
+        public IActionResult Details(Guid id)
+        {
+            DetailsVM DetailsVM = new DetailsVM()
+            {
+                Product = _dbContext.Products.Include(u => u.Category).Include(u => u.ApplicationType)
+                    .Where(u => u.Id == id).FirstOrDefault(),
+                ExistsInCard = false
+            };
+
+            return View(DetailsVM);
+        }
+
         public IActionResult Privacy()
         {
             return View();
