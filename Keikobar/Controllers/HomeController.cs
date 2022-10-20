@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Keikobar.Data;
+using Keikobar.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Keikobar.Models;
 using Keikobar.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Keikobar.Controllers
@@ -35,14 +36,53 @@ namespace Keikobar.Controllers
 
         public IActionResult Details(Guid id)
         {
+            List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null 
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
+            {
+                shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
+            }
+
             DetailsVM DetailsVM = new DetailsVM()
             {
-                Product = _dbContext.Products.Include(u => u.Category).Include(u => u.ApplicationType)
-                    .Where(u => u.Id == id).FirstOrDefault(),
+                // Product = _dbContext.Products.Include(u => u.Category).Include(u => u.ApplicationType)
+                //     .Where(u => u.Id == id).FirstOrDefault(),
+                // ExistsInCard = false
+
+
+                Product = _dbContext.Products.Include(u => u.Category)
+                    .Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id),
                 ExistsInCard = false
             };
 
+            foreach (var item in shoppingCartList)
+            {
+                if (item.ProductId == id)
+                {
+                    DetailsVM.ExistsInCard = true;
+                }
+            }
+
             return View(DetailsVM);
+        }
+
+        [HttpPost, ActionName("Details")]
+        public IActionResult DetailsPost(Guid id)
+        {
+            // List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
+            // if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null 
+            //     && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
+            
+            List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
+            if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null 
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
+            {
+                shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
+            }
+            shoppingCartList.Add(new ShoppingCart {ProductId = id});
+            HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
